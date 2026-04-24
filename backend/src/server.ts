@@ -1,28 +1,11 @@
 import express from "express";
-import { prisma } from "./lib/prisma";
+import userRoutes from "./routes/userRoutes";
 
 const app = express();
 
 app.use(express.json());
 
-app.post("/users", async (req, res) => {
-  const { nome, email } = req.body;
-
-  const user = await prisma.user.create({
-    data: {
-      nome,
-      email,
-    },
-  });
-
-  res.status(201).json(user);
-});
-
-app.get("/users", async (req, res) => {
-  const users = await prisma.user.findMany();
-
-  res.status(200).json(users);
-});
+app.use(userRoutes);
 
 app.listen(3001, () => {
   console.log("Servidor rodando na porta 3001");
