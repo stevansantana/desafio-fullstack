@@ -101,3 +101,22 @@ export const getSummary = async (req: Request, res: Response) => {
     revisadas,
   });
 };
+
+export const reviewChild = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const user = req.user as { preferred_username: string };
+
+  await prisma.child.update({
+    where: { id },
+    data: {
+      revisado: true,
+      revisadoPor: user.preferred_username,
+      revisadoEm: new Date(),
+    },
+  });
+
+  res.json({
+    message: "Criança revisada com sucesso",
+  });
+};
