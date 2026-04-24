@@ -59,3 +59,45 @@ export const getChildById = async (req: Request, res: Response) => {
 
   res.json(child);
 };
+
+export const getSummary = async (req: Request, res: Response) => {
+  const totalCriancas = await prisma.child.count();
+
+  const alertasSaude = await prisma.health.count({
+    where: {
+      alertas: {
+        isEmpty: false,
+      },
+    },
+  });
+
+  const alertasEducacao = await prisma.education.count({
+    where: {
+      alertas: {
+        isEmpty: false,
+      },
+    },
+  });
+
+  const alertasAssistencia = await prisma.socialAssistance.count({
+    where: {
+      alertas: {
+        isEmpty: false,
+      },
+    },
+  });
+
+  const revisadas = await prisma.child.count({
+    where: {
+      revisado: true,
+    },
+  });
+
+  res.json({
+    totalCriancas,
+    alertasSaude,
+    alertasEducacao,
+    alertasAssistencia,
+    revisadas,
+  });
+};
