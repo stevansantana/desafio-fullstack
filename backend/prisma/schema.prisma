@@ -13,8 +13,47 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  nome  String
-  email String @unique
+model Child {
+  id              String   @id
+  nome            String
+  dataNascimento  DateTime
+  bairro          String
+  responsavel     String
+  revisado        Boolean
+  revisadoPor     String?
+  revisadoEm      DateTime?
+
+  saude           Health?
+  educacao        Education?
+  assistencia     SocialAssistance?
+}
+
+model Health {
+  id              Int      @id @default(autoincrement())
+  ultimaConsulta  DateTime
+  vacinasEmDia    Boolean
+  alertas         String[]
+
+  childId         String   @unique
+  child           Child    @relation(fields: [childId], references: [id])
+}
+
+model Education {
+  id                  Int      @id @default(autoincrement())
+  escola              String?
+  frequenciaPercent   Int?
+  alertas             String[]
+
+  childId             String   @unique
+  child               Child    @relation(fields: [childId], references: [id])
+}
+
+model SocialAssistance {
+  id               Int      @id @default(autoincrement())
+  cadUnico         Boolean
+  beneficioAtivo   Boolean
+  alertas          String[]
+
+  childId          String   @unique
+  child            Child    @relation(fields: [childId], references: [id])
 }
