@@ -38,3 +38,24 @@ export const getChildren = async (req: Request, res: Response) => {
 
   res.json(children);
 };
+
+export const getChildById = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const child = await prisma.child.findUnique({
+    where: { id },
+    include: {
+      saude: true,
+      educacao: true,
+      assistencia: true,
+    },
+  });
+
+  if (!child) {
+    return res.status(404).json({
+      error: "Criança não encontrada",
+    });
+  }
+
+  res.json(child);
+};
