@@ -18,6 +18,12 @@ app.post("/users", async (req, res) => {
   res.status(201).json(user);
 });
 
+app.get("/users", async (req, res) => {
+  const users = await prisma.user.findMany();
+
+  res.status(200).json(users);
+});
+
 app.listen(3001, () => {
   console.log("Servidor rodando na porta 3001");
 });
