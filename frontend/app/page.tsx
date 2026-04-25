@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function Home() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +20,7 @@ export default function Home() {
 
       localStorage.setItem("token", response.data.token);
 
-      alert("Login realizado com sucesso!");
+      router.push("/dashboard");
     } catch {
       alert("Credenciais inválidas");
     }
