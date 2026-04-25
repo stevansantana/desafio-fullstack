@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 interface SummaryData {
@@ -21,6 +21,21 @@ interface Child {
 export default function Dashboard() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [children, setChildren] = useState<Child[]>([]);
+  const [bairro, setBairro] = useState("");
+  const [revisado, setRevisado] = useState("");
+  const [alertas, setAlertas] = useState("");
+
+  const fetchChildren = useCallback(async () => {
+    const response = await axios.get("http://localhost:3001/children", {
+      params: {
+        bairro: bairro || undefined,
+        revisado: revisado || undefined,
+        alertas: alertas || undefined,
+      },
+    });
+
+    setChildren(response.data);
+  }, [bairro, revisado, alertas]);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,15 +43,11 @@ export default function Dashboard() {
 
       setSummary(summaryResponse.data);
 
-      const childrenResponse = await axios.get(
-        "http://localhost:3001/children",
-      );
-
-      setChildren(childrenResponse.data);
+      await fetchChildren();
     }
 
     fetchData();
-  }, []);
+  }, [fetchChildren]);
 
   if (!summary) {
     return <p className="p-8">Carregando...</p>;
@@ -52,6 +63,46 @@ export default function Dashboard() {
         <Card title="Alertas Educação" value={summary.alertasEducacao} />
         <Card title="Alertas Assistência" value={summary.alertasAssistencia} />
         <Card title="Revisadas" value={summary.revisadas} />
+      </div>
+
+      <div className="mt-8 bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-bold mb-4">Filtros</h2>
+
+        <div className="grid md:grid-cols-4 gap-4">
+          <input
+            type="text"
+            placeholder="Bairro"
+            value={bairro}
+            onChange={(e) => setBairro(e.target.value)}
+            className="border rounded p-2"
+          />
+
+          <select
+            value={revisado}
+            onChange={(e) => setRevisado(e.target.value)}
+            className="border rounded p-2"
+          >
+            <option value="">Status revisão</option>
+            <option value="true">Revisado</option>
+            <option value="false">Pendente</option>
+          </select>
+
+          <select
+            value={alertas}
+            onChange={(e) => setAlertas(e.target.value)}
+            className="border rounded p-2"
+          >
+            <option value="">Alertas</option>
+            <option value="true">Com alertas</option>
+          </select>
+
+          <button
+            onClick={fetchChildren}
+            className="bg-blue-600 text-white rounded p-2"
+          >
+            Filtrar
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 bg-white rounded-lg shadow p-6">
