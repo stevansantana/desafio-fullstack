@@ -11,17 +11,31 @@ interface SummaryData {
   revisadas: number;
 }
 
+interface Child {
+  id: string;
+  nome: string;
+  bairro: string;
+  revisado: boolean;
+}
+
 export default function Dashboard() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
+  const [children, setChildren] = useState<Child[]>([]);
 
   useEffect(() => {
-    async function fetchSummary() {
-      const response = await axios.get("http://localhost:3001/summary");
+    async function fetchData() {
+      const summaryResponse = await axios.get("http://localhost:3001/summary");
 
-      setSummary(response.data);
+      setSummary(summaryResponse.data);
+
+      const childrenResponse = await axios.get(
+        "http://localhost:3001/children",
+      );
+
+      setChildren(childrenResponse.data);
     }
 
-    fetchSummary();
+    fetchData();
   }, []);
 
   if (!summary) {
@@ -38,6 +52,32 @@ export default function Dashboard() {
         <Card title="Alertas Educação" value={summary.alertasEducacao} />
         <Card title="Alertas Assistência" value={summary.alertasAssistencia} />
         <Card title="Revisadas" value={summary.revisadas} />
+      </div>
+
+      <div className="mt-8 bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-bold mb-4">Crianças cadastradas</h2>
+
+        <div className="space-y-4">
+          {children.map((child) => (
+            <div
+              key={child.id}
+              className="border rounded p-4 flex justify-between"
+            >
+              <div>
+                <p className="font-semibold">{child.nome}</p>
+                <p className="text-sm text-gray-500">{child.bairro}</p>
+              </div>
+
+              <span
+                className={`text-sm font-medium ${
+                  child.revisado ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {child.revisado ? "Revisado" : "Pendente"}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
