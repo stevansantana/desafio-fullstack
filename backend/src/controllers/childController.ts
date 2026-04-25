@@ -29,10 +29,11 @@ export const getChildren = async (req: Request, res: Response) => {
     },
     skip,
     take: limit,
-    include: {
-      saude: true,
-      educacao: true,
-      assistencia: true,
+    select: {
+      id: true,
+      nome: true,
+      bairro: true,
+      revisado: true,
     },
   });
 
