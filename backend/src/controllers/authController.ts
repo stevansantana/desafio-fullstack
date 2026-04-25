@@ -21,7 +21,7 @@ export const generateToken = async (req: Request, res: Response) => {
       {
         preferred_username: email,
       },
-      "segredo_super_seguro",
+      process.env.JWT_SECRET!,
       {
         expiresIn: "1h",
       },
