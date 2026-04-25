@@ -7,7 +7,7 @@ export const getChildren = async (req: Request, res: Response) => {
 
   const bairro = req.query.bairro as string;
   const revisado = req.query.revisado as string;
-  const alerta = req.query.alerta as string;
+  const alertas = req.query.alertas as string;
 
   const skip = (page - 1) * limit;
 
@@ -19,11 +19,11 @@ export const getChildren = async (req: Request, res: Response) => {
         revisado: revisado === "true",
       }),
 
-      ...(alerta && {
+      ...(alertas === "true" && {
         OR: [
-          { saude: { alertas: { has: alerta } } },
-          { educacao: { alertas: { has: alerta } } },
-          { assistencia: { alertas: { has: alerta } } },
+          { saude: { alertas: { isEmpty: false } } },
+          { educacao: { alertas: { isEmpty: false } } },
+          { assistencia: { alertas: { isEmpty: false } } },
         ],
       }),
     },
