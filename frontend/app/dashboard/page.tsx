@@ -24,6 +24,7 @@ export default function Dashboard() {
   const [bairro, setBairro] = useState("");
   const [revisado, setRevisado] = useState("");
   const [alertas, setAlertas] = useState("");
+  const [page, setPage] = useState(1);
 
   const fetchChildren = useCallback(async () => {
     const response = await axios.get("http://localhost:3001/children", {
@@ -31,11 +32,13 @@ export default function Dashboard() {
         bairro: bairro || undefined,
         revisado: revisado || undefined,
         alertas: alertas || undefined,
+        page,
+        limit: 5,
       },
     });
 
     setChildren(response.data);
-  }, [bairro, revisado, alertas]);
+  }, [bairro, revisado, alertas, page]);
 
   useEffect(() => {
     async function fetchData() {
@@ -129,6 +132,24 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          className="bg-gray-300 px-4 py-2 rounded"
+        >
+          Anterior
+        </button>
+
+        <span className="flex items-center font-medium">Página {page}</span>
+
+        <button
+          onClick={() => setPage((prev) => prev + 1)}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Próxima
+        </button>
       </div>
     </main>
   );
