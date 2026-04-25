@@ -53,6 +53,19 @@ export default function ChildDetailPage() {
       <main className="p-8 bg-gray-100 min-h-screen">
         <h1 className="text-3xl font-bold mb-6">{child.nome}</h1>
 
+        <div className="mb-6">
+          {child.revisado ? (
+            <span className="text-green-600 font-medium">Caso já revisado</span>
+          ) : (
+            <button
+              onClick={handleReview}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Marcar como revisado
+            </button>
+          )}
+        </div>
+
         <div className="grid md:grid-cols-3 gap-4">
           <Section title="Saúde" data={child.saude} />
           <Section title="Educação" data={child.educacao} />
@@ -60,6 +73,31 @@ export default function ChildDetailPage() {
         </div>
       </main>
     );
+
+    async function handleReview() {
+      const token = localStorage.getItem("token");
+
+      await axios.patch(
+        `http://localhost:3001/children/${id}/review`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setChild((prev) =>
+        prev
+          ? {
+              ...prev,
+              revisado: true,
+            }
+          : prev,
+      );
+
+      alert("Criança marcada como revisada!");
+    }
   }
 
   function Section({
