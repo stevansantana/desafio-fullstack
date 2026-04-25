@@ -112,13 +112,46 @@ export default function ChildDetailPage() {
         <h2 className="font-bold text-lg mb-4">{title}</h2>
 
         {data ? (
-          <pre className="text-sm whitespace-pre-wrap">
-            {JSON.stringify(data, null, 2)}
-          </pre>
+          <div className="space-y-2 text-sm text-gray-700">
+            {Object.entries(data).map(([key, value]) => (
+              <p key={key}>
+                <strong>{formatLabel(key)}:</strong> {formatValue(value)}
+              </p>
+            ))}
+          </div>
         ) : (
           <p className="text-gray-500">Sem dados disponíveis</p>
         )}
       </div>
     );
+  }
+
+  function formatLabel(label: string) {
+    const labels: Record<string, string> = {
+      vacinasEmDia: "Vacinas em dia",
+      alertas: "Alertas",
+      escola: "Escola",
+      frequenciaPercent: "Frequência",
+      cadUnico: "CadÚnico",
+      beneficioAtivo: "Benefício ativo",
+    };
+
+    return labels[label] || label;
+  }
+
+  function formatValue(value: unknown) {
+    if (Array.isArray(value)) {
+      return value.length ? value.join(", ") : "Nenhum";
+    }
+
+    if (typeof value === "boolean") {
+      return value ? "Sim" : "Não";
+    }
+
+    if (value === null) {
+      return "Não informado";
+    }
+
+    return String(value);
   }
 }
