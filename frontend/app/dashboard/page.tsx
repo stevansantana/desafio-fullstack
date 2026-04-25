@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 interface SummaryData {
   totalCriancas: number;
@@ -113,9 +114,10 @@ export default function Dashboard() {
 
         <div className="space-y-4">
           {children.map((child) => (
-            <div
+            <Link
+              href={`/dashboard/children/${child.id}`}
               key={child.id}
-              className="border rounded p-4 flex justify-between"
+              className="border rounded p-4 flex justify-between block hover:bg-gray-50"
             >
               <div>
                 <p className="font-semibold">{child.nome}</p>
@@ -129,7 +131,7 @@ export default function Dashboard() {
               >
                 {child.revisado ? "Revisado" : "Pendente"}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
