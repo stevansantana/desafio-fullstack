@@ -19,7 +19,6 @@ export default function Home() {
       });
 
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("token", response.data.token);
 
       router.push("/dashboard");
     } catch {
